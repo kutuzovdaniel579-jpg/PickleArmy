@@ -5,6 +5,7 @@
   <title>PickleArmy – Minecraft Java 1.21.11</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="PickleArmy is een Minecraft Java 1.21.11 server met een gezellige community, economie en in-game shop.">
+
   <style>
     :root {
       --bg: #050810;
@@ -20,7 +21,11 @@
       --shadow: 0 18px 40px rgba(0,0,0,0.45);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -66,6 +71,16 @@
       border-radius: 7px;
       background: conic-gradient(from 210deg, #35c96b, #2dd4bf, #22c55e, #35c96b);
       box-shadow: 0 0 18px rgba(53,201,107,0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 5px;
+      background: radial-gradient(circle at 30% 0, rgba(255,255,255,0.35), transparent 55%), #020617;
     }
 
     .nav-links {
@@ -80,7 +95,24 @@
       padding-bottom: 2px;
     }
 
-    .nav-links a:hover { color: var(--text); }
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #35c96b, #22c55e);
+      transition: width 0.18s ease-out;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
 
     .pill {
       padding: 0.25rem 0.7rem;
@@ -98,66 +130,13 @@
       padding: 2.5rem 1.5rem 3.5rem;
     }
 
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
-      gap: 2.5rem;
-      align-items: center;
-      margin-bottom: 3rem;
-    }
-
-    .hero-title {
-      font-size: clamp(2.2rem, 3vw + 1rem, 3.1rem);
-      font-weight: 800;
-      text-transform: uppercase;
-      margin-bottom: 0.9rem;
-    }
-
-    .hero-title span {
-      background: linear-gradient(120deg, #35c96b, #2dd4bf);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .hero-sub {
-      color: var(--muted);
-      max-width: 32rem;
-      margin-bottom: 1.4rem;
-      font-size: 0.98rem;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 0.8rem;
-    }
-
-    .btn {
-      border-radius: 999px;
-      padding: 0.6rem 1.3rem;
-      font-size: 0.9rem;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #35c96b, #22c55e);
-      color: #020617;
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid rgba(148,163,184,0.5);
-    }
-
     section { margin-bottom: 3rem; }
 
     .section-title {
       font-size: 1.2rem;
       font-weight: 700;
       margin-bottom: 0.4rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
@@ -168,18 +147,9 @@
       max-width: 40rem;
     }
 
-    .muted-box {
-      border-radius: var(--radius);
-      border: 1px dashed rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.7);
-      padding: 0.8rem 0.9rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
     footer {
       border-top: 1px solid rgba(148,163,184,0.25);
-      padding: 1.2rem 1.5rem;
+      padding: 1.2rem 1.5rem 1.6rem;
       font-size: 0.8rem;
       color: var(--muted);
       background: #020617;
@@ -194,11 +164,11 @@
     }
 
     @media (max-width: 800px) {
-      .hero { grid-template-columns: 1fr; }
       .nav-links { display: none; }
     }
   </style>
 </head>
+
 <body>
 
 <header>
@@ -209,7 +179,7 @@
     </div>
     <div class="nav-links">
       <a href="#over">Over de server</a>
-      <a href="shop.html">Shop</a>
+      <a href="#shop">Shop</a>
       <a href="#join">Meespelen</a>
     </div>
     <div class="pill">Minecraft Java 1.21.11</div>
@@ -217,38 +187,22 @@
 </header>
 
 <main>
-  <section class="hero">
-    <div>
-      <div class="pill" style="margin-bottom: 0.7rem;">Community server • Survival & economie</div>
-      <h1 class="hero-title">
-        Welkom bij <span>PickleArmy</span>
-      </h1>
-      <p class="hero-sub">
-        PickleArmy is een Minecraft Java 1.21.11 server met focus op survival, economie en een hechte community.
-      </p>
-      <div class="hero-actions">
-        <a href="#join" class="btn btn-primary">Join de server</a>
-        <a href="shop.html" class="btn btn-ghost">Bekijk de shop</a>
-      </div>
-    </div>
-  </section>
 
   <section id="over">
     <h2 class="section-title">Wat voor server is PickleArmy?</h2>
     <p class="section-sub">
-      Relaxed survivalen met een lichte focus op economie en community.
+      PickleArmy draait om relaxed survivalen met een lichte focus op economie en community.
     </p>
   </section>
 
   <section id="join">
     <h2 class="section-title">Hoe speel je mee?</h2>
-    <div class="muted-box">
-      <strong>Stap 1:</strong> Start Minecraft Java 1.21.11<br>
-      <strong>Stap 2:</strong> Ga naar Multiplayer → Add Server<br>
-      <strong>Stap 3:</strong> Vul als IP in: <code>PickleArmy.aternos.me</code><br>
-      <strong>Stap 4:</strong> Join de server.
-    </div>
+    <p class="section-sub">
+      Start Minecraft Java 1.21.11 → Multiplayer → Add Server → 
+      IP: <strong>PickleArmy.aternos.me</strong>
+    </p>
   </section>
+
 </main>
 
 <footer>
