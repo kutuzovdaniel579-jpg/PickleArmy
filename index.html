@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>PickleArmy – Minecraft Java 1.21.11</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PickleArmy is een Minecraft Java 1.21.11 server met een gezellige community, economie en in-game shop.">
+  <style>
+    :root {
+      --bg: #050810;
+      --bg-alt: #0b1020;
+      --accent: #35c96b;
+      --accent-soft: #2a9f55;
+      --text: #f5f5f5;
+      --muted: #a0a7b8;
+      --danger: #ff4d6a;
+      --card: #111729;
+      --border: #1c2438;
+      --radius: 10px;
+      --shadow: 0 18px 40px rgba(0,0,0,0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #182642 0, #050810 55%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    header {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      backdrop-filter: blur(16px);
+      background: linear-gradient(to right, rgba(5,8,16,0.95), rgba(5,8,16,0.7));
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.95rem;
+    }
+
+    .brand-logo {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      background: conic-gradient(from 210deg, #35c96b, #2dd4bf, #22c55e, #35c96b);
+      box-shadow: 0 0 18px rgba(53,201,107,0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 5px;
+      background: radial-gradient(circle at 30% 0, rgba(255,255,255,0.35), transparent 55%), #020617;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.2rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 2px;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #35c96b, #22c55e);
+      transition: width 0.18s ease-out;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .pill {
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 3.5rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.5fr);
+      gap: 2.5rem;
+      align-items: center;
+      margin-bottom: 3rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 3vw + 1rem, 3.1rem);
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+
+    .hero-title span {
+      background: linear-gradient(120deg, #35c96b, #2dd4bf);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      max-width: 32rem;
+      margin-bottom: 1.4rem;
+      font-size: 0.98rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-bottom: 1.6rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hero-meta span {
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(15,23,42,0.7);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 0.6rem 1.3rem;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #35c96b, #22c55e);
+      color: #020617;
+      box-shadow: 0 14px 30px rgba(34,197,94,0.35);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(148,163,184,0.5);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .hero-card {
+      background: radial-gradient(circle at top, #1f2937 0, #020617 60%);
+      border-radius: 18px;
+      padding: 1.4rem 1.3rem;
+      border: 1px solid rgba(148,163,184,0.35);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.12), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(34,197,94,0.18), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero-card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(34,197,94,0.9);
+      margin-right: 0.35rem;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #bbf7d0;
+    }
+
+    .server-box {
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
+      padding: 0.9rem 0.9rem 0.8rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .server-box-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .server-ip {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.9rem;
+      padding: 0.4rem 0.55rem;
+      border-radius: 8px;
+      background: #020617;
+      border: 1px solid rgba(148,163,184,0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #e5e7eb;
+    }
+
+    .server-ip span.copy-hint {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .server-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.6rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .server-meta strong {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+      color: var(--muted);
+    }
+
+    .note {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1.4rem;
+      max-width: 40rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1.4rem;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 1rem 1rem 1.1rem;
+      box-shadow: 0 10px 26px rgba(15,23,42,0.7);
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.3rem;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--muted);
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .price {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0.4rem 0;
+      color: #bbf7d0;
+    }
+
+    .currency {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .shop-footer {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.9rem;
+    }
+
+    .shop-footer strong {
+      color: #e5e7eb;
+    }
+
+    .muted-box {
+      border-radius: var(--radius);
+      border: 1px dashed rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.7);
+      padding: 0.8rem 0.9rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid rgba(148,163,184,0.25);
+      padding: 1.2rem 1.5rem 1.6rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: #020617;
+    }
+
+    footer .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.7rem;
+      align-items: center;
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-card {
+        order: -1;
+      }
+      .nav {
+        padding-inline: 1rem;
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="brand">
+      <div class="brand-logo"></div>
+      <span>PickleArmy</span>
+    </div>
+    <div class="nav-links">
+      <a href="#over">Over de server</a>
+      <a href="#shop">Shop</a>
+      <a href="#join">Meespelen</a>
+    </div>
+    <div class="pill">Minecraft Java 1.21.11</div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <div class="pill" style="margin-bottom: 0.7rem;">Community server • Survival & economie</div>
+      <h1 class="hero-title">
+        Welkom bij <span>PickleArmy</span>
+      </h1>
+      <p class="hero-sub">
+        PickleArmy is een Minecraft Java 1.21.11 server met een focus op survival, economie en een hechte community.
+        Bouw je basis, verdien in-game valuta en koop speciale items in de server‑shop.
+      </p>
+      <div class="hero-meta">
+        <span>✔ Whitelisted / semi‑vanilla</span>
+        <span>✔ In‑game shop & valuta</span>
+        <span>✔ Gezellige spelers</span>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="document.getElementById('join').scrollIntoView({behavior:'smooth'});">
+          Join de server
+        </button>
+        <button class="btn btn-ghost" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'});">
+          Bekijk de shop
+        </button>
+      </div>
+    </div>
+
+    <aside class="hero-card" aria-label="Serverstatus">
+      <div class="hero-card-inner">
+        <div class="hero-card-header">
+          <div>
+            <div class="server-box-title">Serverstatus</div>
+            <div class="status">
+              <span class="status-dot"></span>
+              Online
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.8rem; color:var(--muted);">Versie</div>
+            <div style="font-size:0.9rem; font-weight:600;">Java 1.21.11</div>
+          </div>
+        </div>
+
+        <div class="server-box">
+          <div class="server-box-title">Server IP</div>
+          <div class="server-ip">
+            <span>picklearmy.example.net</span>
+            <span class="copy-hint">Kopieer & plak in Minecraft</span>
+          </div>
+          <div class="server-meta">
+            <div><strong>Spelers:</strong> 0–20 online</div>
+            <div><strong>Gamemode:</strong> Survival</div>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Economie</span>
+            <span class="tag">Claims / bescherming</span>
+            <span class="tag">Events</span>
+          </div>
+        </div>
+
+        <p class="note">
+          Tip: voeg de server toe aan je multiplayer‑lijst zodat je altijd ziet wanneer er spelers online zijn.
+        </p>
+      </div>
+    </aside>
+  </section>
+
+  <section id="over">
+    <h2 class="section-title">Wat voor server is PickleArmy?</h2>
+    <p class="section-sub">
+      PickleArmy draait om relaxed survivalen met een lichte focus op economie. Je speelt op een stabiele
+      Java 1.21.11 wereld met een paar zorgvuldig gekozen plugins om het leuker, maar niet pay‑to‑win te maken.
+    </p>
+
+    <div class="grid grid-3">
+      <article class="card">
+        <h3>Survival met structuur</h3>
+        <p>
+          Je start met basisgear en bouw je eigen plek op. Claims of bescherming (afhankelijk van de plugins)
+          zorgen ervoor dat je builds veilig zijn.
+        </p>
+        <div class="badge-row">
+          <span class="badge">Semi‑vanilla</span>
+          <span class="badge">Rustige opbouw</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Economie & in‑game valuta</h3>
+        <p>
+          Verdien in‑game valuta door te minen, farmen, handelen of events. Met die valuta kun je in de
+          PickleArmy‑shop speciale items, boosts of cosmetische dingen kopen.
+        </p>
+        <div class="badge-row">
+          <span class="badge">Jobs / quests</span>
+          <span class="badge">Handel tussen spelers</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Community & sfeer</h3>
+        <p>
+          De server is bedoeld voor een kleine maar actieve community. Respect, humor en samenwerken staan centraal.
+          Drama en griefen worden niet getolereerd.
+        </p>
+        <div class="badge-row">
+          <span class="badge">Discord‑community</span>
+          <span class="badge">Events & mini‑games</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="shop">
+    <h2 class="section-title">In‑game shop</h2>
+    <p class="section-sub">
+      In de PickleArmy‑shop kun je items en voordelen kopen met <strong>in‑game valuta</strong>. Er is geen echte
+      geldtransactie op deze website: alles wat je hier ziet is bedoeld als overzicht van wat je in de server kunt kopen.
+    </p>
+
+    <div class="shop-grid">
+      <article class="card">
+        <h3>Starter Kit+</h3>
+        <p>
+          Een verbeterde startset met tools, eten en een paar quality‑of‑life items om je eerste dagen makkelijker te maken.
+        </p>
+        <div class="price">750 <span class="currency">PickleCoins</span></div>
+        <ul style="font-size:0.8rem; color:var(--muted); margin-left:1rem; margin-bottom:0.7rem;">
+          <li>Iron tools set</li>
+          <li>Stack food</li>
+          <li>Kleine bonus‑resources</li>
+        </ul>
+        <button class="btn btn-primary" type="button">
+          Koop in‑game
+        </button>
+      </article>
+
+      <article class="card">
+        <h3>Farm Booster</h3>
+        <p>
+          Tijdelijke boost voor je farms (bijv. extra drops of snellere groei, afhankelijk van de server‑instellingen).
+        </p>
+        <div class="price">1.500 <span class="currency">PickleCoins</span></div>
+        <ul style="font-size:0.8rem; color:var(--muted); margin-left:1rem; margin-bottom:0.7rem;">
+          <li>Actief voor 24 uur</li>
+          <li>Werkt op jouw claim</li>
+        </ul>
+        <button class="btn btn-primary" type="button">
+          Koop in‑game
+        </button>
+      </article>
+
+      <article class="card">
+        <h3>Cosmetische titel</h3>
+        <p>
+          Ontgrendel een unieke titel voor in de chat, zodat iedereen ziet dat jij deel bent van de PickleArmy.
+        </p>
+        <div class="price">2.000 <span class="currency">PickleCoins</span></div>
+        <ul style="font-size:0.8rem; color:var(--muted); margin-left:1rem; margin-bottom:0.7rem;">
+          <li>Unieke kleur / prefix</li>
+          <li>Geen gameplay‑voordeel</li>
+        </ul>
+        <button class="btn btn-primary" type="button">
+          Koop in‑game
+        </button>
+      </article>
+    </div>
+
+    <p class="shop-footer">
+      <strong>Belangrijk:</strong> aankopen worden daadwerkelijk gedaan via in‑game commands of een server‑menu.
+      Deze website toont alleen de pakketten en prijzen, niet de betaling zelf.
+    </p>
+  </section>
+
+  <section id="join">
+    <h2 class="section-title">Hoe speel je mee?</h2>
+    <p class="section-sub">
+      Meespelen op PickleArmy is eenvoudig. Zorg dat je Minecraft Java 1.21.11 hebt, voeg de server toe en volg
+      eventueel de stappen in Discord als er een whitelist of regels zijn.
+    </p>
+
+    <div class="grid">
+      <div class="muted-box">
+        <strong>Stap 1:</strong> Start Minecraft Java 1.21.11<br>
+        <strong>Stap 2:</strong> Ga naar <em>Multiplayer</em> → <em>Add Server</em><br>
+        <strong>Stap 3:</strong> Vul als IP in: <code>picklearmy.example.net</code><br>
+        <strong>Stap 4:</strong> Join de server en volg de instructies in de spawn.
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© <span id="year"></span> PickleArmy • Niet officieel gelinkt aan Mojang of Microsoft.</span>
+    <span>Community‑server • Minecraft Java 1.21.11</span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
