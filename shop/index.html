@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>PickleArmy – In-game Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bekijk de in-game shop van PickleArmy Minecraft server.">
+
+  <!-- Je kunt hier dezelfde <style> uit index.html plakken -->
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="brand">
+      <div class="brand-logo"></div>
+      <span>PickleArmy</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html#over">Over de server</a>
+      <a href="shop.html">Shop</a>
+      <a href="index.html#join">Meespelen</a>
+    </div>
+    <div class="pill">Minecraft Java 1.21.11</div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2 class="section-title">In-game shop</h2>
+    <p class="section-sub">
+      In de PickleArmy-shop kun je items en voordelen kopen met <strong>in-game valuta</strong>.
+    </p>
+
+    <div class="shop-grid">
+      <article class="card">
+        <h3>Starter Kit+</h3>
+        <p>Verbeterde startset met tools en resources.</p>
+        <div class="price">750 <span class="currency">PickleCoins</span></div>
+        <button class="btn btn-primary">Koop in-game</button>
+      </article>
+
+      <article class="card">
+        <h3>Farm Booster</h3>
+        <p>Tijdelijke boost voor je farms.</p>
+        <div class="price">1.500 <span class="currency">PickleCoins</span></div>
+        <button class="btn btn-primary">Koop in-game</button>
+      </article>
+
+      <article class="card">
+        <h3>Cosmetische titel</h3>
+        <p>Unieke titel in de chat.</p>
+        <div class="price">2.000 <span class="currency">PickleCoins</span></div>
+        <button class="btn btn-primary">Koop in-game</button>
+      </article>
+    </div>
+
+    <p class="shop-footer">
+      <strong>Belangrijk:</strong> aankopen gebeuren via in-game commands.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© <span id="year"></span> PickleArmy</span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
