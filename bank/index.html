@@ -112,6 +112,26 @@
       margin-top: 3rem;
       border-top: 1px solid rgba(255,255,255,0.1);
     }
+
+    input, button {
+      background: #050810;
+      border: 1px solid #1c2438;
+      border-radius: 6px;
+      padding: 0.5rem 0.7rem;
+      color: #f5f5f5;
+    }
+
+    button {
+      cursor: pointer;
+      background: #35c96b;
+      border-color: #35c96b;
+      color: #050810;
+      font-weight: 600;
+    }
+
+    button:hover {
+      filter: brightness(1.1);
+    }
   </style>
 </head>
 
@@ -133,7 +153,7 @@
   <!-- SALDO -->
   <div class="card">
     <h2>Huidig saldo</h2>
-    <div class="balance">₳ 12,450</div>
+    <div class="balance">₳ 0</div>
     <div class="currency">PickleCoins</div>
   </div>
 
@@ -147,31 +167,29 @@
         <th>Beschrijving</th>
         <th>Bedrag</th>
       </tr>
-
-      <tr>
-        <td>17 feb 2026</td>
-        <td>Verkoop: 32 diamonds</td>
-        <td class="pos">+₳ 640</td>
-      </tr>
-
-      <tr>
-        <td>16 feb 2026</td>
-        <td>Aankoop: Farm Booster</td>
-        <td class="neg">−₳ 1500</td>
-      </tr>
-
-      <tr>
-        <td>15 feb 2026</td>
-        <td>Event reward</td>
-        <td class="pos">+₳ 2000</td>
-      </tr>
-
-      <tr>
-        <td>14 feb 2026</td>
-        <td>Teleport Book aankoop</td>
-        <td class="neg">−₳ 750</td>
-      </tr>
+      <!-- Rijen worden dynamisch gevuld via loadTransactions() -->
     </table>
+  </div>
+
+  <!-- GELD OVERMAKEN -->
+  <div class="card">
+    <h2>Geld overmaken</h2>
+
+    <label>Ontvanger (Minecraft naam)</label><br>
+    <input id="sendTo" type="text" placeholder="Spelernaam" style="width:100%;margin-bottom:1rem;">
+
+    <label>Bedrag</label><br>
+    <input id="amount" type="number" min="1" placeholder="Bedrag" style="width:100%;margin-bottom:1rem;">
+
+    <label>Bankkaart ID</label><br>
+    <input id="cardId" type="text" placeholder="ID op je bankkaart" style="width:100%;margin-bottom:1rem;">
+
+    <label>Security code (via Discord)</label><br>
+    <input id="secCode" type="text" placeholder="6‑digit code" style="width:100%;margin-bottom:1rem;">
+
+    <button onclick="sendMoney()" style="margin-top:1rem;">Versturen</button>
+
+    <p id="sendStatus" style="margin-top:1rem;"></p>
   </div>
 
   <!-- INFO -->
@@ -196,6 +214,96 @@
 
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
+
+  const CURRENT_USER = "PLAYERNAME_HIER"; // vervang dit door je ingame naam / UUID mapping
+
+  async function loadBalance() {
+    try {
+      const response = await fetch("https://api.picklebank.xyz/balance?user=" + encodeURIComponent(CURRENT_USER));
+      const data = await response.json();
+      document.querySelector(".balance").textContent = "₳ " + (data.balance ?? 0);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function loadTransactions() {
+    try {
+      const table = document.querySelector("table");
+      const response = await fetch("https://api.picklebank.xyz/transactions?user=" + encodeURIComponent(CURRENT_USER));
+      const data = await response.json();
+
+      table.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
+
+      data.forEach(t => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${t.date}</td>
+          <td>${t.description}</td>
+          <td class="${t.amount > 0 ? "pos" : "neg"}">
+            ${t.amount > 0 ? "+" : ""}₳ ${t.amount}
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function sendMoney() {
+    const to = document.getElementById("sendTo").value.trim();
+    const amount = Number(document.getElementById("amount").value);
+    const cardId = document.getElementById("cardId").value.trim();
+    const secCode = document.getElementById("secCode").value.trim();
+    const status = document.getElementById("sendStatus");
+
+    if (!to || !amount || amount <= 0 || !cardId || !secCode) {
+      status.style.color = "#ff4d6a";
+      status.textContent = "Vul alle velden correct in.";
+      return;
+    }
+
+    status.style.color = "#a0a7b8";
+    status.textContent = "Bezig met versturen...";
+
+    try {
+      const response = await fetch("https://api.picklebank.xyz/transfer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: CURRENT_USER,
+          to,
+          amount,
+          cardId,
+          secCode
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        status.style.color = "#35c96b";
+        status.textContent = "Transactie succesvol!";
+        document.getElementById("amount").value = "";
+        document.getElementById("secCode").value = "";
+        loadBalance();
+        loadTransactions();
+      } else {
+        status.style.color = "#ff4d6a";
+        status.textContent = "Fout: " + (result.error || "Onbekende fout");
+      }
+    } catch (e) {
+      console.error(e);
+      status.style.color = "#ff4d6a";
+      status.textContent = "Netwerkfout tijdens versturen.";
+    }
+  }
+
+  window.onload = () => {
+    loadBalance();
+    loadTransactions();
+  };
 </script>
 
 </body>
